@@ -1,27 +1,53 @@
-const bcrypt = require('bcryptjs');
+const authService = require("../services/authService")
+const tokenBlocklist = require('../lib/tokenBlocklist/tokenBlocklist')
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-exports.register = (req, res) => {
-    const { name, email, password } = req.body;
-    const hashedPassword = bcrypt.hashSync(password, 8);
+//Controller for all the Authorization functionalities
+class AuthController {
+    async register(req, res) {
+        try {
+            const user = await authService.register(req.body);
+            res.status(200).json(user);
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    }
 
-    User.create({ name, email, password: hashedPassword }, (err, result) => {
-        if (err) return res.status(500).send('Error registering user');
-        res.status(201).send({ message: 'User registered successfully' });
-    });
-};
+    async login(req, res) {
+        try {
+            const { email, password } = req.body;
+            const userData = await authService.login(email, password);
+            res.status(200).json(userData);
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    }
 
-exports.login = (req, res) => {
-    const { email, password } = req.body;
+    async changePassword(req, res) {
+        try {
+            const result = await authService.changePassword(req.body.id, req.body.newPassword);
+            res.status(200).json(result);
+        } catch (err) {
+            res.status(400).json({ error: err.message });
+        }
+    }
 
-    User.findByEmail(email, (err, user) => {
-        if (err || !user.length) return res.status(404).send('User not found');
-        
-        const isValidPassword = bcrypt.compareSync(password, user[0].password);
-        if (!isValidPassword) return res.status(401).send('Invalid password');
+    async logout(req, res) {
+        try {
+            const token = req.headers['authorization'];
+            if (!token) return res.status(400).json({ message: 'No token provided' });
 
-        const token = jwt.sign({ id: user[0].id }, process.env.JWT_SECRET, { expiresIn: 86400 });
-        res.status(200).send({ auth: true, token });
-    });
-};
+            // Decode token to get expiration time
+            const decoded = jwt.decode(token);
+            const expirationInSeconds = decoded.exp - Math.floor(Date.now() / 1000);
+
+            // Add token to the blocklist with its remaining lifetime
+            await tokenBlocklist.addToBlocklist(token, expirationInSeconds);
+            res.status(200).json({ message: 'Logged out successfully' });
+        } catch (error) {
+            res.status(500).json({ message: 'An error occurred during logout', error });
+        }
+    }
+}
+
+module.exports = new AuthController();

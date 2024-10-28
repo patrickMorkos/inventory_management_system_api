@@ -1,24 +1,43 @@
-const db = require('../config/db');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/db');
 
-const User = {
-    create: (user, callback) => {
-        db.query('INSERT INTO users SET ?', user, callback);
+const User = sequelize.define('User', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
     },
-    findById: (id, callback) => {
-        db.query('SELECT * FROM users WHERE id = ?', [id], callback);
+    first_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    findByEmail: (email, callback) => {
-        db.query('SELECT * FROM users WHERE email = ?', [email], callback);
+    last_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
     },
-    getAll: (callback) => {
-        db.query('SELECT * FROM users', callback);
+    phone_number: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
     },
-    update: (id, user, callback) => {
-        db.query('UPDATE users SET ? WHERE id = ?', [user, id], callback);
+    email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
     },
-    delete: (id, callback) => {
-        db.query('DELETE FROM users WHERE id = ?', [id], callback);
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    date_of_birth: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+    date_of_join: {
+        type: DataTypes.DATE,
+        allowNull: false,
     }
-};
+});
 
 module.exports = User;

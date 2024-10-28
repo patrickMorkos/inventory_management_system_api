@@ -4,14 +4,19 @@
   "description": "A simple RESTful API with Node.js and MySQL",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "migrate": "npx sequelize-cli db:migrate",
+    "start": "npm run migrate && nodemon server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.0",
     "dotenv": "^16.0.0",
     "express": "^4.18.1",
-    "jsonwebtoken": "^8.5.1",
-    "mysql2": "^2.3.3"
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.11.3",
+    "sequelize": "^6.37.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
   }
 }
