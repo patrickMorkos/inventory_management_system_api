@@ -10,6 +10,7 @@ class AuthController {
             console.log(`Log::Successfully registered user with id: '${user.id}'`)
             res.status(200).json(user);
         } catch (err) {
+            console.log(`Log::Failed to registered user with error: '${err.message}'`)
             res.status(400).json({ error: err.message });
         }
     }
@@ -21,6 +22,7 @@ class AuthController {
             console.log(`Log::Successfully logged in user with id: '${userData.user.id}'`)
             res.status(200).json(userData);
         } catch (err) {
+            console.log(`Log::Failed to login user with error: '${err.message}'`)
             res.status(400).json({ error: err.message });
         }
     }
@@ -31,6 +33,7 @@ class AuthController {
             console.log(`Log::Successfully changed password for user with id: '${req.body.id}'`)
             res.status(200).json(result);
         } catch (err) {
+            console.log(`Log::Failed to change password with error: '${err.message}'`)
             res.status(400).json({ error: err.message });
         }
     }
@@ -49,6 +52,7 @@ class AuthController {
             console.log(`Log::Successfully logged out user with id: '${req.body.id}'`)
             res.status(200).json({ message: 'Logged out successfully' });
         } catch (error) {
+            console.log(`Log::Failed to logout user with error: '${error}'`)
             res.status(500).json({ message: 'An error occurred during logout', error });
         }
     }
