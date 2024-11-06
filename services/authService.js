@@ -53,9 +53,12 @@ class AuthService {
             "id": newUser.id,
             "first_name": newUser.first_name,
             "last_name": newUser.last_name,
+            "phone_number": newUser.phone_number,
             "email": newUser.email,
             "date_of_birth": newUser.date_of_birth,
-            "date_of_join": newUser.date_of_join
+            "date_of_join": newUser.date_of_join,
+            "blood_type": newUser.blood_type,
+            "user_type_id": newUser.user_type_id,
         }
         return newUser;
     }
@@ -63,13 +66,24 @@ class AuthService {
     //This function login the user
     async login(email, password) {
         //Finding the user for this email
-        const user = await User.findOne({ where: { email } });
+        let user = await User.findOne({ where: { email } });
 
         //Checking if the user exists and his password is correct
         if (user && (await bcrypt.compare(password, user.password))) {
 
             //Creating a jwt token
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            user = {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "phone_number": user.phone_number,
+                "email": user.email,
+                "date_of_birth": user.date_of_birth,
+                "date_of_join": user.date_of_join,
+                "blood_type": user.blood_type,
+                "user_type_id": user.user_type_id,
+            }
             return { user, token };
         }
         throw new Error('Invalid credentials');

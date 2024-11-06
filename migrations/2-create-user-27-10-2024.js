@@ -2,7 +2,7 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('Users', {
+        await queryInterface.createTable('user', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -39,6 +39,20 @@ module.exports = {
                 type: Sequelize.DATE,
                 allowNull: false,
             },
+            blood_type: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            user_type_id: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'user_type',
+                    key: 'id',
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'SET NULL'
+            },
             createdAt: {
                 type: Sequelize.DATE,
                 allowNull: false,
@@ -53,6 +67,6 @@ module.exports = {
     },
 
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('Users');
+        await queryInterface.dropTable('user');
     },
 };

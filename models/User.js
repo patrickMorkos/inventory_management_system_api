@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
+const UserType = require('./UserType');
 
 const User = sequelize.define('User', {
     id: {
@@ -37,7 +38,24 @@ const User = sequelize.define('User', {
     date_of_join: {
         type: DataTypes.DATE,
         allowNull: false,
+    },
+    blood_type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    user_type_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     }
+}, {
+    tableName: 'user',
+    timestamps: true,
+});
+
+User.belongsTo(UserType, {
+    foreignKey: 'user_type_id',
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
 });
 
 module.exports = User;

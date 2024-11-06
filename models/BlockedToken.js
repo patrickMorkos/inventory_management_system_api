@@ -1,23 +1,24 @@
-const { Model, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-class BlockedToken extends Model { }
-
-BlockedToken.init(
-    {
-        token: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        expires_at: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
+const BlockedToken = sequelize.define('BlockedToken', {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
     },
-    {
-        sequelize,
-        modelName: 'BlockedToken',
-    }
-);
+    token: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    expires_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+    },
+}, {
+    tableName: 'blocked_tokens',
+    timestamps: true,
+});
 
 module.exports = BlockedToken;

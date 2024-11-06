@@ -2,12 +2,12 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('blockedTokens', {
+        await queryInterface.createTable('blocked_tokens', {
             id: {
+                type: Sequelize.INTEGER,
                 allowNull: false,
                 autoIncrement: true,
                 primaryKey: true,
-                type: Sequelize.INTEGER,
             },
             token: {
                 type: Sequelize.STRING,
@@ -30,6 +30,6 @@ module.exports = {
         });
     },
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('blockedTokens');
+        await queryInterface.dropTable('blocked_tokens');
     },
 };
