@@ -1,20 +1,24 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const UserType = sequelize.define('UserType', {
+const Brand = sequelize.define('Brand', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },
-    user_type_name: {
+    brand_name: {
         type: DataTypes.STRING,
-        allowNull: false,
-    }
+        allowNull: true,
+    },
+    arabic_brand_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
-    tableName: 'user_type',
+    tableName: 'brand',
     timestamps: false,
 });
 
-module.exports = UserType;
+module.exports = Brand;

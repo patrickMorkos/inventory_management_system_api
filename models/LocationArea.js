@@ -1,20 +1,20 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
-const UserType = sequelize.define('UserType', {
+const LocationArea = sequelize.define('LocationArea', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
     },
-    user_type_name: {
+    location_area_name: {
         type: DataTypes.STRING,
         allowNull: false,
     }
 }, {
-    tableName: 'user_type',
+    tableName: 'location_area',
     timestamps: false,
 });
 
-module.exports = UserType;
+module.exports = LocationArea;

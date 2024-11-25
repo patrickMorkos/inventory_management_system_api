@@ -2,14 +2,14 @@
 
 module.exports = {
     up: async (queryInterface, Sequelize) => {
-        await queryInterface.createTable('user_type', {
+        await queryInterface.createTable('product_family', {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
                 autoIncrement: true,
                 allowNull: false,
             },
-            name: {
+            product_family_name: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
@@ -17,6 +17,6 @@ module.exports = {
     },
 
     down: async (queryInterface, Sequelize) => {
-        await queryInterface.dropTable('user_type');
+        await queryInterface.dropTable('product_family');
     },
 };
