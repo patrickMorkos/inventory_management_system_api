@@ -1,16 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 const sequelize = require('./config/db')
 const cors = require('cors');
 require('dotenv').config();
+const path = require('path');
 
 const app = express();
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(bodyParser.json());
 app.use(cors());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/category', categoryRoutes);
 
 const startServer = async () => {
     try {
