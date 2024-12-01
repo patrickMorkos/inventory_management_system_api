@@ -6,6 +6,7 @@ const brandRoutes = require('./routes/brandRoutes');
 const productType = require('./routes/productTypeRoutes');
 const whsRoutes = require('./routes/whsRoutes');
 const productDescriptionRoutes = require('./routes/productDescriptionRoutes');
+const productPriceRoutes = require('./routes/productPriceRoutes');
 const sequelize = require('./config/db')
 const cors = require('cors');
 require('dotenv').config();
@@ -24,6 +25,7 @@ app.use('/api/brand', brandRoutes);
 app.use('/api/product-type', productType);
 app.use('/api/whs', whsRoutes);
 app.use('/api/product-description', productDescriptionRoutes);
+app.use('/api/product-price', productPriceRoutes);
 
 const startServer = async () => {
     try {
