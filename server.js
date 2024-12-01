@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const brandRoutes = require('./routes/brandRoutes');
 const sequelize = require('./config/db')
 const cors = require('cors');
 require('dotenv').config();
@@ -16,6 +17,7 @@ app.use(cors());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/category', categoryRoutes);
+app.use('/api/brand', brandRoutes);
 
 const startServer = async () => {
     try {
