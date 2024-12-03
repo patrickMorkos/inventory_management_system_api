@@ -61,22 +61,20 @@ class ProductService {
             if (!productFamily) throw new Error("Invalid product_family_id: No product family found with this ID.");
         }
 
-        if (data.product_description_id) {
-            const productDescription = await ProductDescription.findOne({ where: { id: data.product_description_id } });
-            if (!productDescription) throw new Error("Invalid product_description_id: No product description found with this ID.");
-        }
+        const descriptionObject = JSON.parse(data.product_description);
+        const priceObject = JSON.parse(data.product_price);
+        const sizeObject = JSON.parse(data.product_size);
+        const productDescription = await ProductDescription.create(descriptionObject);
+        const productPrice = await ProductPrice.create(priceObject);
+        const productSize = await ProductSize.create(sizeObject);
 
-        if (data.product_price_id) {
-            const productPrice = await ProductPrice.findOne({ where: { id: data.product_price_id } });
-            if (!productPrice) throw new Error("Invalid product_price_id: No product price found with this ID.");
-        }
+        const newProduct = await Product.create({
+            ...data,
+            product_description_id: productDescription.id,
+            product_price_id: productPrice.id,
+            product_size_id: productSize.id,
+        });
 
-        if (data.product_size_id) {
-            const productSize = await ProductSize.findOne({ where: { id: data.product_size_id } });
-            if (!productSize) throw new Error("Invalid product_size_id: No product size found with this ID.");
-        }
-
-        const newProduct = await Product.create(data);
         return newProduct;
     }
 
