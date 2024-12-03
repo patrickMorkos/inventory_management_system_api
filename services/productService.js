@@ -1,4 +1,3 @@
-// const { Product, Brand, Category, ProductType, Whs, ProductDescription, ProductPrice, ProductFamily, ProductSize } = require('../models');
 const Product = require('../models/Product');
 const Brand = require('../models/Brand');
 const Category = require('../models/Category');
