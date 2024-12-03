@@ -56,6 +56,11 @@ class ProductService {
             if (!whs) throw new Error("Invalid whs_id: No whs found with this ID.");
         }
 
+        if (data.product_family_id) {
+            const productFamily = await ProductFamily.findOne({ where: { id: data.product_family_id } });
+            if (!productFamily) throw new Error("Invalid product_family_id: No product family found with this ID.");
+        }
+
         if (data.product_description_id) {
             const productDescription = await ProductDescription.findOne({ where: { id: data.product_description_id } });
             if (!productDescription) throw new Error("Invalid product_description_id: No product description found with this ID.");
@@ -64,11 +69,6 @@ class ProductService {
         if (data.product_price_id) {
             const productPrice = await ProductPrice.findOne({ where: { id: data.product_price_id } });
             if (!productPrice) throw new Error("Invalid product_price_id: No product price found with this ID.");
-        }
-
-        if (data.product_family_id) {
-            const productFamily = await ProductFamily.findOne({ where: { id: data.product_family_id } });
-            if (!productFamily) throw new Error("Invalid product_family_id: No product family found with this ID.");
         }
 
         if (data.product_size_id) {
