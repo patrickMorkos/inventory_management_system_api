@@ -81,7 +81,19 @@ class ProductService {
     }
 
     async getAllProducts() {
-        const products = await Product.findAll();
+        const products = await Product.findAll({
+            include: [
+                { model: Brand },
+                { model: Category },
+                { model: ProductType },
+                { model: Whs },
+                { model: ProductDescription },
+                { model: ProductPrice },
+                { model: ProductFamily },
+                { model: ProductSize }
+            ],
+        });
+
         return products;
     }
 
@@ -89,7 +101,19 @@ class ProductService {
         if (!id || isNaN(id)) {
             throw new Error('Invalid product ID.');
         }
-        const product = await Product.findOne({ where: { id } });
+        const product = await Product.findOne({
+            where: { id },
+            include: [
+                { model: Brand },
+                { model: Category },
+                { model: ProductType },
+                { model: Whs },
+                { model: ProductDescription },
+                { model: ProductPrice },
+                { model: ProductFamily },
+                { model: ProductSize }
+            ]
+        });
         if (!product) {
             throw new Error('Product not found.');
         }
