@@ -4,6 +4,22 @@ const Product = require('../models/Product');
 class MainWarehouseStockService {
     async addProductsToMainWarehouseStock(data) {
         try {
+            for (const element of data) {
+                if (!element.product_id) {
+                    throw new Error('Product ID is required');
+                }
+                if (element.quantity === undefined || element.quantity === null) {
+                    throw new Error('Quantity is required');
+                }
+                if (element.quantity < 0) {
+                    throw new Error('Quantity must be greater than 0');
+                }
+                const product = await Product.findOne({ where: { id: element.product_id } });
+                if (product === null) {
+                    console.log("Product not found");
+                    throw new Error(`Product with id ${element.product_id} not found`);
+                }
+            }
             const addedProducts = await MainWarehouseStock.bulkCreate(data);
             return addedProducts;
         } catch (error) {
