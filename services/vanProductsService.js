@@ -22,15 +22,15 @@ class VanProductsService {
                     throw new Error('Quantity must be greater than 0');
                 }
 
-                if (uniqueProductIds.has(element.product_id)) {
-                    throw new Error(`Duplicate product with id '${element.product_id}' found in the request`);
-                }
-                uniqueProductIds.add(element.product_id);
-
                 const product = await Product.findOne({ where: { id: element.product_id } });
                 if (!product) {
                     throw new Error(`Product with id ${element.product_id} not found`);
                 }
+
+                if (uniqueProductIds.has(element.product_id)) {
+                    throw new Error(`Duplicate product with id '${element.product_id}' found in the request`);
+                }
+                uniqueProductIds.add(element.product_id);
             }
 
             const productIds = data.map((item) => item.product_id);
