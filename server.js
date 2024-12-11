@@ -11,6 +11,7 @@ const productFamilyRoutes = require('./routes/productFamilyRoutes');
 const productSizeRoutes = require('./routes/productSizeRoutes');
 const product = require('./routes/productRoutes');
 const mainWarehouseStockRoutes = require('./routes/mainWarehouseStockRoutes');
+const vanProductsRoutes = require('./routes/vanProductsRoutes');
 const sequelize = require('./config/db')
 const cors = require('cors');
 require('dotenv').config();
@@ -34,6 +35,7 @@ app.use('/api/product-family', productFamilyRoutes);
 app.use('/api/product-size', productSizeRoutes);
 app.use('/api/product', product);
 app.use('/api/main-warehouse-stock', mainWarehouseStockRoutes);
+app.use('/api/van-products', vanProductsRoutes);
 
 const startServer = async () => {
     try {

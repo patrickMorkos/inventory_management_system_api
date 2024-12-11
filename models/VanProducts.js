@@ -8,6 +8,7 @@ const VanProducts = sequelize.define('VanProducts', {
         type: DataTypes.INTEGER,
         primaryKey: true,
         allowNull: false,
+        autoIncrement: true,
     },
     quantity: {
         type: DataTypes.INTEGER,
