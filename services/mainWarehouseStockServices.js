@@ -4,6 +4,7 @@ const Product = require('../models/Product');
 class MainWarehouseStockService {
     async addProductsToMainWarehouseStock(data) {
         try {
+            const uniqueProductIds = new Set();
             for (const element of data) {
                 if (!element.product_id) {
                     throw new Error('Product ID is required');
@@ -14,12 +15,33 @@ class MainWarehouseStockService {
                 if (element.quantity < 0) {
                     throw new Error('Quantity must be greater than 0');
                 }
+
                 const product = await Product.findOne({ where: { id: element.product_id } });
                 if (product === null) {
                     console.log("Product not found");
                     throw new Error(`Product with id ${element.product_id} not found`);
                 }
+
+                if (uniqueProductIds.has(element.product_id)) {
+                    throw new Error(`Duplicate product with id '${element.product_id}' found in the request`);
+                }
+                uniqueProductIds.add(element.product_id);
             }
+
+            const productIds = data.map((item) => item.product_id);
+            const existingEntries = await MainWarehouseStock.findAll({
+                where: {
+                    product_id: productIds,
+                },
+            });
+
+            const existingProductIds = new Set(existingEntries.map((entry) => entry.product_id));
+            console.log("Existing product IDs:", existingProductIds);
+
+            existingProductIds.forEach((productId) => {
+                throw new Error(`Product with id ${productId} already exists in your main warehouse stock`);
+            });
+
             const addedProducts = await MainWarehouseStock.bulkCreate(data);
             return addedProducts;
         } catch (error) {
