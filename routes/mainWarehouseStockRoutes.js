@@ -7,5 +7,6 @@ router.post('/add-products', authenticateToken, mainWarehouseStockController.add
 router.get('/get-all-main-warehouse-stock-products', authenticateToken, mainWarehouseStockController.getAllMainWarehouseStocksProducts);
 router.put('/update-products-quantities', authenticateToken, mainWarehouseStockController.updateProductsQuantities);
 router.delete('/remove-product-from-main-warehouse-stock', authenticateToken, mainWarehouseStockController.removeProductFromMainWarehouseStock);
+router.get('/get-all-main-warehouse-stock-categories', authenticateToken, mainWarehouseStockController.getMainWarehouseStockCategories);
 
 module.exports = router;

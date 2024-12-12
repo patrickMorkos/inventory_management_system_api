@@ -1,5 +1,6 @@
 const MainWarehouseStock = require('../models/MainWarehouseStock');
 const Product = require('../models/Product');
+const Category = require('../models/Category');
 
 class MainWarehouseStockService {
     async addProductsToMainWarehouseStock(data) {
@@ -113,6 +114,38 @@ class MainWarehouseStockService {
             return product;
         } catch (error) {
             throw new Error(`Failed to remove product from main warehouse: ${error.message}`);
+        }
+    }
+
+    async getMainWarehouseStockCategories() {
+        try {
+            const mainWarehouseCategories = await MainWarehouseStock.findAll({
+                include: [
+                    {
+                        model: Product,
+                        attributes: [],
+                        include: [
+                            {
+                                model: Category,
+                                attributes: ['id', 'category_name', 'category_image_url']
+                            }
+                        ]
+                    }
+                ],
+                attributes: [],
+                group: ['Product->Category.id'],
+                raw: true
+            });
+
+            const transformedCategories = mainWarehouseCategories.map(item => ({
+                id: item['Product.Category.id'],
+                category_name: item['Product.Category.category_name'],
+                category_image_url: item['Product.Category.category_image_url']
+            }));
+
+            return transformedCategories;
+        } catch (error) {
+            throw new Error(`Failed to retrieve main warehouse stocks: ${error.message}`);
         }
     }
 }

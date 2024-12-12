@@ -44,6 +44,17 @@ class MainWarehouseStockController {
             res.status(400).json({ error: error.message });
         }
     }
+
+    async getMainWarehouseStockCategories(req, res) {
+        try {
+            const mainWarehouseStockCategories = await mainWarehouseStockService.getMainWarehouseStockCategories();
+            console.log(`Log::Successfully retrieved all main warehouse stock categories`);
+            res.status(200).json(mainWarehouseStockCategories);
+        } catch (error) {
+            console.log(`Log::Failed to retrieve all main warehouse stock categories`);
+            res.status(400).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new MainWarehouseStockController();
