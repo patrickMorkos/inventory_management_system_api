@@ -44,6 +44,17 @@ class VanProductsController {
             res.status(400).json({ error: error.message });
         }
     }
+
+    async getAllVanProductsCategories(req, res) {
+        try {
+            const vanProductsCategories = await vanProductsService.getAllVanProductsCategories(req.params.user_id);
+            console.log(`Log::Successfully retrieved all van products categories`);
+            res.status(200).json(vanProductsCategories);
+        } catch (error) {
+            console.log(`Log::Failed to retrieve all van products categories`);
+            res.status(400).json({ error: error.message });
+        }
+    }
 }
 
 module.exports = new VanProductsController();

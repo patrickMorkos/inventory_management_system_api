@@ -1,6 +1,7 @@
 const VanProducts = require('../models/VanProducts');
 const Product = require('../models/Product');
 const User = require('../models/User');
+const Category = require('../models/Category');
 
 class VanProductsService {
     async addProductsToVan(user_id, data) {
@@ -144,6 +145,47 @@ class VanProductsService {
             return product;
         } catch (error) {
             throw new Error(`Failed to remove product from van: ${error.message}`);
+        }
+    }
+
+    async getAllVanProductsCategories(user_id) {
+        try {
+            const salesman = await User.findOne({ where: { id: user_id } });
+            if (!salesman) {
+                throw new Error('Salesman not found');
+            }
+            const vanProducts = await VanProducts.findAll({
+                where: { user_id: user_id },
+                include: [
+                    {
+                        model: Product,
+                        attributes: [],
+                        include: [
+                            {
+                                model: Category,
+                                attributes: ['id', 'category_name', 'category_image_url']
+                            }
+                        ]
+                    }
+                ],
+                attributes: [],
+                group: ['Product->category.id'],
+                raw: true,
+            });
+
+            console.log("vanProducts:", vanProducts);
+
+            const transformedProducts = vanProducts.map(product => {
+                return {
+                    id: product['Product.Category.id'],
+                    category_name: product['Product.Category.category_name'],
+                    category_image_url: product['Product.Category.category_image_url']
+                };
+            });
+
+            return transformedProducts;
+        } catch (error) {
+            throw new Error(`Failed to retrieve van products categories: ${error.message}`);
         }
     }
 }
