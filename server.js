@@ -19,10 +19,21 @@ const path = require('path');
 
 const app = express();
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', (req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+}, express.static(path.join(__dirname, 'uploads')));
+
 
 app.use(bodyParser.json());
-app.use(cors());
+
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/category', categoryRoutes);
