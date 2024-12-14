@@ -1,6 +1,8 @@
 const MainWarehouseStock = require('../models/MainWarehouseStock');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
+const Brand = require('../models/Brand');
+const ProductPrice = require('../models/ProductPrice');
 
 class MainWarehouseStockService {
     async addProductsToMainWarehouseStock(data) {
@@ -55,7 +57,14 @@ class MainWarehouseStockService {
             const mainWarehouseStocks = await MainWarehouseStock.findAll({
                 include: [{
                     model: Product,
-                    attributes: ['id', 'name', 'image_url']
+                    attributes: ['id', 'name', 'image_url'],
+                    include: [{
+                        model: Brand,
+                        attributes: ['id', 'brand_name'],
+                    }, {
+                        model: ProductPrice,
+                        attributes: ['id', 'pricea1'],
+                    }]
                 }],
                 attributes: ['quantity']
             });
