@@ -2,6 +2,8 @@ const VanProducts = require('../models/VanProducts');
 const Product = require('../models/Product');
 const User = require('../models/User');
 const Category = require('../models/Category');
+const Brand = require('../models/Brand');
+const ProductPrice = require('../models/ProductPrice');
 
 class VanProductsService {
     async addProductsToVan(user_id, data) {
@@ -73,7 +75,14 @@ class VanProductsService {
                 include: [
                     {
                         model: Product,
-                        attributes: ['id', 'name', 'image_url']
+                        attributes: ['id', 'name', 'image_url'],
+                        include: [{
+                            model: Brand,
+                            attributes: ['id', 'brand_name'],
+                        }, {
+                            model: ProductPrice,
+                            attributes: ['id', 'pricea1'],
+                        }]
                     },
                     {
                         model: User,
