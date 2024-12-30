@@ -75,13 +75,16 @@ class VanProductsService {
                 include: [
                     {
                         model: Product,
-                        attributes: ['id', 'name', 'image_url', 'category_id'],
+                        attributes: ['id', 'name', 'image_url'],
                         include: [{
                             model: Brand,
                             attributes: ['id', 'brand_name'],
                         }, {
                             model: ProductPrice,
                             attributes: ['id', 'pricea1'],
+                        }, {
+                            model: Category,
+                            attributes: ['id', 'category_name'],
                         }]
                     },
                     {
