@@ -28,7 +28,6 @@ module.exports = {
             },
             qr_code: {
                 type: Sequelize.STRING,
-                unique: true,
                 allowNull: false,
             },
             company_name: {
