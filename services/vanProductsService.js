@@ -81,7 +81,7 @@ class VanProductsService {
                             attributes: ['id', 'brand_name'],
                         }, {
                             model: ProductPrice,
-                            attributes: ['id', 'pricea1'],
+                            attributes: ['id', 'pricea1'],//TODO: change to price per client
                         }, {
                             model: Category,
                             attributes: ['id', 'category_name'],
