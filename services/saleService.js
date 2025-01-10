@@ -244,8 +244,7 @@ class SaleService {
         return updatedSaleData;
     }
 
-    async getAllClientSales(user_id, data) {
-        const client_id = data.client_id;
+    async getAllClientSales(user_id, client_id) {
         const sales = await Sale.findAll({
             where: { user_id: user_id, client_id: client_id },
             attributes: [

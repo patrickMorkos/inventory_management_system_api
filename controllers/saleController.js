@@ -36,11 +36,12 @@ class SaleController {
 
     async getAllClientSales(req, res) {
         try {
-            const sales = await saleService.getAllClientSales(req.params.user_id, req.body);
-            console.log(`Log::Successfully retrieved all sales for salesman with id: '${req.params.user_id}' of client with id: '${req.body.client_id}'`)
+            const client_id = req.query.client_id;
+            const sales = await saleService.getAllClientSales(req.params.user_id, client_id);
+            console.log(`Log::Successfully retrieved all sales for salesman with id: '${req.params.user_id}' of client with id: '${req.query.client_id}'`)
             res.status(200).json(sales);
         } catch (error) {
-            console.log(`Log::Failed to retrieve all sales for salesman with id: '${req.params.user_id}' of client with id: '${req.body.client_id}'`)
+            console.log(`Log::Failed to retrieve all sales for salesman with id: '${req.params.user_id}' of client with id: '${req.query.client_id}'`)
             res.status(400).json({ error: error.message });
         }
     }
