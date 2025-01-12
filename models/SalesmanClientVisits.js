@@ -7,15 +7,16 @@ const SalesmanClientVisits = sequelize.define('SalesmanClientVisits', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
         allowNull: false,
     },
     check_in_date_time: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
     check_out_date_time: {
         type: DataTypes.DATE,
-        allowNull: false,
+        allowNull: true,
     },
     user_id: {
         type: DataTypes.INTEGER,

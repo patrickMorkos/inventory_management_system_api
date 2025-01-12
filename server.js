@@ -14,6 +14,7 @@ const mainWarehouseStockRoutes = require('./routes/mainWarehouseStockRoutes');
 const vanProductsRoutes = require('./routes/vanProductsRoutes');
 const clientRoutes = require('./routes/clientRoutes');
 const saleRoutes = require('./routes/saleRoutes');
+const salesmanClientVisits = require('./routes/salesmanClientVisitsRoutes');
 const sequelize = require('./config/db')
 const cors = require('cors');
 require('dotenv').config();
@@ -51,6 +52,7 @@ app.use('/api/main-warehouse-stock', mainWarehouseStockRoutes);
 app.use('/api/van-products', vanProductsRoutes);
 app.use('/api/client', clientRoutes);
 app.use('/api/sale', saleRoutes);
+app.use('/api/salesman-client-visits', salesmanClientVisits);
 
 const startServer = async () => {
     try {
