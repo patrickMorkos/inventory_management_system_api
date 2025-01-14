@@ -1,8 +1,10 @@
 const Client = require('../models/Client');
 const QRCode = require('qrcode');
+const SalesmanClients = require('../models/SalesmanClients');
+const LocationArea = require('../models/LocationArea');
 
 class ClientService {
-    async createClient(data) {
+    async createClient(data, user_id) {
         const firstName = data.first_name;
         const lastName = data.last_name;
         const phoneNumber = data.phone_number;
@@ -23,6 +25,11 @@ class ClientService {
         newClient.qr_code = qrCodeUrl;
         await newClient.save();
 
+        const salesmanClients = await SalesmanClients.create({
+            user_id: user_id,
+            client_id: newClient.id
+        });
+
         return newClient;
     }
 
@@ -35,6 +42,21 @@ class ClientService {
             throw new Error("Client not found.");
         }
         return client;
+    }
+
+    async getClientsBySalesman(user_id) {
+        const salesmanClients = await SalesmanClients.findAll({
+            where: { user_id: user_id },
+            include: [
+                { model: Client },
+            ]
+        });
+        return salesmanClients;
+    }
+
+    async getLocationAreas() {
+        const locationAreas = await LocationArea.findAll();
+        return locationAreas;
     }
 }
 
