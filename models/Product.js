@@ -164,7 +164,7 @@ const Product = sequelize.define('Product', {
         allowNull: true,
     },
 }, {
-    tableName: 'Product',
+    tableName: 'product',
     timestamps: true,
 });
 
