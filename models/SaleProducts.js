@@ -18,6 +18,10 @@ const SaleProducts = sequelize.define('SaleProducts', {
         type: DataTypes.INTEGER,
         allowNull: false,
     },
+    product_price: {
+        type: DataTypes.DOUBLE,
+        allowNull: true,
+    },
 }, {
     tableName: 'sale_products',
     timestamps: true,
