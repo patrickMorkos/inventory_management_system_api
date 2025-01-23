@@ -58,6 +58,10 @@ const Client = sequelize.define('Client', {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    price_class: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
 }, {
     tableName: 'client',
     timestamps: true,
