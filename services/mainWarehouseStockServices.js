@@ -4,6 +4,7 @@ const Category = require('../models/Category');
 const Brand = require('../models/Brand');
 const ProductPrice = require('../models/ProductPrice');
 const Client = require('../models/Client');
+const { Sequelize } = require('sequelize');
 
 class MainWarehouseStockService {
     async addProductsToMainWarehouseStock(data) {
@@ -58,6 +59,9 @@ class MainWarehouseStockService {
             let clientPriceClass = "a1";
             if (client_id) {
                 const client = await Client.findOne({ where: { id: client_id } });
+                if (!client) {
+                    throw new Error('Client not found');
+                }
                 clientPriceClass = client.price_class;
             }
             const mainWarehouseStocks = await MainWarehouseStock.findAll({
@@ -69,7 +73,7 @@ class MainWarehouseStockService {
                         attributes: ['id', 'brand_name'],
                     }, {
                         model: ProductPrice,
-                        attributes: ['id', `price${clientPriceClass}`],
+                        attributes: ['id', [Sequelize.col(`price${clientPriceClass}`), 'price']],
                     }, {
                         model: Category,
                         attributes: ['id', 'category_name'],

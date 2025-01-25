@@ -14,7 +14,8 @@ class VanProductsController {
 
     async getAllVanProducts(req, res) {
         try {
-            const vanProducts = await vanProductsService.getAllVanProducts(req.params.user_id);
+            const client_id = req.query.client_id;
+            const vanProducts = await vanProductsService.getAllVanProducts(req.params.user_id, client_id);
             console.log(`Log::Successfully retrieved all van products`);
             res.status(200).json(vanProducts);
         } catch (error) {

@@ -4,6 +4,8 @@ const User = require('../models/User');
 const Category = require('../models/Category');
 const Brand = require('../models/Brand');
 const ProductPrice = require('../models/ProductPrice');
+const Client = require('../models/Client');
+const { Sequelize } = require('sequelize');
 
 class VanProductsService {
     async addProductsToVan(user_id, data) {
@@ -64,11 +66,19 @@ class VanProductsService {
         }
     }
 
-    async getAllVanProducts(user_id) {
+    async getAllVanProducts(user_id, client_id) {
         try {
             const salesman = await User.findOne({ where: { id: user_id } });
             if (!salesman) {
                 throw new Error('Salesman not found');
+            }
+            let clientPriceClass = "a1";
+            if (client_id) {
+                const client = await Client.findOne({ where: { id: client_id } });
+                if (!client) {
+                    throw new Error('Client not found');
+                }
+                clientPriceClass = client.price_class;
             }
             const vanProducts = await VanProducts.findAll({
                 where: { user_id: user_id },
@@ -81,7 +91,7 @@ class VanProductsService {
                             attributes: ['id', 'brand_name'],
                         }, {
                             model: ProductPrice,
-                            attributes: ['id', 'pricea1'],//TODO: change to price per client
+                            attributes: ['id', [Sequelize.col(`price${clientPriceClass}`), 'price']],
                         }, {
                             model: Category,
                             attributes: ['id', 'category_name'],
