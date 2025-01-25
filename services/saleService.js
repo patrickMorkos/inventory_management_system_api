@@ -35,8 +35,8 @@ class SaleService {
 
             // Validate sale products
             for (const item of data.products) {
-                if (!item.product_id || !item.quantity) {
-                    throw new Error('Product ID, quantity are required');
+                if (!item.product_id || !item.quantity || !item.product_price) {
+                    throw new Error('Product ID, quantity and price are required');
                 }
 
                 const vanProduct = await VanProducts.findOne({
@@ -98,9 +98,11 @@ class SaleService {
                     sale_id: sale.id,
                     product_id: item.product_id,
                     quantity: item.quantity,
+                    product_price: item.product_price,
                 })
                 saleProduct.product_id = saveResult.product_id;
                 saleProduct.quantity = saveResult.quantity;
+                saleProduct.product_price = saveResult.product_price;
                 saleProducts.push(saleProduct);
             }
 
