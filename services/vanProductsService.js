@@ -73,12 +73,12 @@ class VanProductsService {
                 throw new Error('Salesman not found');
             }
             let clientPriceClass = "a1";
-            if (client_id) {
+            if (client_id && client_id != "null") {
                 const client = await Client.findOne({ where: { id: client_id } });
                 if (!client) {
                     throw new Error('Client not found');
                 }
-                clientPriceClass = client.price_class;
+                clientPriceClass = client.price_class || 'a1';
             }
             const vanProducts = await VanProducts.findAll({
                 where: { user_id: user_id },
