@@ -14,7 +14,8 @@ class MainWarehouseStockController {
 
     async getAllMainWarehouseStocksProducts(req, res) {
         try {
-            const mainWarehouseStockProducts = await mainWarehouseStockService.getAllMainWarehouseStocksProducts();
+            const client_id = req.query.client_id;
+            const mainWarehouseStockProducts = await mainWarehouseStockService.getAllMainWarehouseStocksProducts(client_id);
             console.log(`Log::Successfully retrieved all main warehouse stock products`);
             res.status(200).json(mainWarehouseStockProducts);
         } catch (error) {

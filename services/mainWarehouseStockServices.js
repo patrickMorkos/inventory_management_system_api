@@ -3,6 +3,7 @@ const Product = require('../models/Product');
 const Category = require('../models/Category');
 const Brand = require('../models/Brand');
 const ProductPrice = require('../models/ProductPrice');
+const Client = require('../models/Client');
 
 class MainWarehouseStockService {
     async addProductsToMainWarehouseStock(data) {
@@ -52,8 +53,13 @@ class MainWarehouseStockService {
         }
     }
 
-    async getAllMainWarehouseStocksProducts() {
+    async getAllMainWarehouseStocksProducts(client_id) {
         try {
+            let clientPriceClass = "a1";
+            if (client_id) {
+                const client = await Client.findOne({ where: { id: client_id } });
+                clientPriceClass = client.price_class;
+            }
             const mainWarehouseStocks = await MainWarehouseStock.findAll({
                 include: [{
                     model: Product,
@@ -63,7 +69,7 @@ class MainWarehouseStockService {
                         attributes: ['id', 'brand_name'],
                     }, {
                         model: ProductPrice,
-                        attributes: ['id', 'pricea1'],
+                        attributes: ['id', `price${clientPriceClass}`],
                     }, {
                         model: Category,
                         attributes: ['id', 'category_name'],
