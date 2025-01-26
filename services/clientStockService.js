@@ -52,9 +52,7 @@ class ClientStockService {
             };
 
         } catch (error) {
-            return {
-                message: `Failed to add product to client stock: ${error.message}`
-            };
+            throw new Error(`Failed to add product to client stock: ${error.message}`);
         }
     }
 
