@@ -275,6 +275,7 @@ class SaleService {
                     {
                         model: Product,
                         attributes: [
+                            "id",
                             "name",
                             "image_url",
                         ],
