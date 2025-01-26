@@ -1,6 +1,6 @@
 const ClientStock = require('../models/ClientStock');
 const Product = require('../models/Product');
-const Category = require('../models/Category');
+const Brand = require('../models/Brand');
 const Client = require('../models/Client');
 const { Sequelize } = require('sequelize');
 
@@ -72,6 +72,10 @@ class ClientStockService {
                 include: [{
                     model: Product,
                     attributes: ['id', 'name', 'image_url'],
+                    include: [{
+                        model: Brand,
+                        attributes: ['id', 'brand_name']
+                    }]
                 }],
                 attributes: ['quantity'],
             });
