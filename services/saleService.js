@@ -269,7 +269,7 @@ class SaleService {
             sale.dataValues.products = await SaleProducts.findAll({
                 where: { sale_id: sale.id },
                 attributes: [
-                    "quantity",
+                    "quantity", "product_price"
                 ],
                 include: [
                     {
@@ -283,12 +283,6 @@ class SaleService {
                                 model: Brand,
                                 attributes: [
                                     "brand_name",
-                                ],
-                            },
-                            {
-                                model: ProductPrice,
-                                attributes: [
-                                    "pricea1",//TODO: change to price per client
                                 ],
                             }
                         ]
