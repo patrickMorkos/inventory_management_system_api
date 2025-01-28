@@ -16,6 +16,7 @@ const clientRoutes = require('./routes/clientRoutes');
 const saleRoutes = require('./routes/saleRoutes');
 const salesmanClientVisits = require('./routes/salesmanClientVisitsRoutes');
 const clientStockRoutes = require('./routes/clientStockRoutes');
+const returnedProductsRoutes = require('./routes/returnedProductsRoutes');
 
 const sequelize = require('./config/db')
 const cors = require('cors');
@@ -56,6 +57,7 @@ app.use('/api/client', clientRoutes);
 app.use('/api/sale', saleRoutes);
 app.use('/api/salesman-client-visits', salesmanClientVisits);
 app.use('/api/client-stock', clientStockRoutes);
+app.use('/api/returned-products', returnedProductsRoutes);
 
 const startServer = async () => {
     try {

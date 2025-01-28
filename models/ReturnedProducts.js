@@ -6,6 +6,12 @@ const User = require('./User');
 const ReturnedProductReason = require('./ReturnedProductReason');
 
 const ReturnedProducts = sequelize.define('ReturnedProducts', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+        allowNull: false,
+    },
     returned_date: {
         type: DataTypes.DATE,
         allowNull: false,
