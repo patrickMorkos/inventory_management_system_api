@@ -34,9 +34,18 @@ class ReturnedProductsService {
                 returned_product_reason_id,
             });
 
-            // Deduct quantity from client_stock
+            // Find client stock
             const clientStock = await ClientStock.findOne({ where: { client_id, product_id } });
-            await clientStock.update({ quantity: clientStock.quantity - quantity });
+
+            if (clientStock) {
+                if (clientStock.quantity === quantity) {
+                    // If returning all stock, delete the record
+                    await clientStock.destroy();
+                } else {
+                    // Otherwise, deduct quantity
+                    await clientStock.update({ quantity: clientStock.quantity - quantity });
+                }
+            }
 
             // Increase quantity in van_products
             const vanProduct = await VanProducts.findOne({ where: { user_id, product_id } });
