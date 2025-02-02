@@ -9,6 +9,7 @@ const SaleProducts = require('../models/SaleProducts');
 const vanProductsService = require('./vanProductsService');
 const Brand = require('../models/Brand');
 const SaleType = require('../models/SaleType');
+const MainWarehouseStock = require('../models/MainWarehouseStock');
 
 class SaleService {
     async createSale(user_id, data) {
@@ -31,56 +32,56 @@ class SaleService {
                 throw new Error('Sale products are required');
             }
 
-            let vanProductList = [];
+            let productList = [];
+            let inventoryModel = null;
+
+            // Determine inventory source based on sale_type_id
+            if (data.sale_type_id === 1) {
+                inventoryModel = VanProducts;
+            } else if (data.sale_type_id === 2) {
+                inventoryModel = MainWarehouseStock;
+            } else {
+                throw new Error('Invalid sale_type_id');
+            }
 
             // Validate sale products
             for (const item of data.products) {
                 if (!item.product_id || !item.quantity || !item.product_price) {
-                    throw new Error('Product ID, quantity and price are required');
+                    throw new Error('Product ID, quantity, and price are required');
                 }
 
-                const vanProduct = await VanProducts.findOne({
-                    where: { user_id: user_id, product_id: item.product_id }
+                const product = await inventoryModel.findOne({
+                    where: {
+                        product_id: item.product_id,
+                        ...(data.sale_type_id === 1 ? { user_id: user_id } : {}) // Ensure user_id filter for van sales
+                    }
                 });
 
-                vanProductList.push(vanProduct);
-
-                if (!vanProduct) {
-                    throw new Error(`Product with id ${item.product_id} not found in van`);
+                if (!product) {
+                    throw new Error(`Product with id ${item.product_id} not found in inventory`);
                 }
 
-                if (item.quantity > vanProduct.quantity) {
+                if (item.quantity > product.quantity) {
                     throw new Error(`Insufficient quantity for product ${item.product_id}`);
                 }
+
+                productList.push(product);
             }
 
-            //Calculating price without vat
-            let totalPriceWithoutVatUsd = 0;
-            let totalPriceUsd = data.total_price_usd;
-            let vatValue = data.vat_value;
-            totalPriceWithoutVatUsd = (totalPriceUsd / (1 + vatValue / 100)).toFixed(2);
+            // Calculate price without VAT
+            let totalPriceWithoutVatUsd = (data.total_price_usd / (1 + data.vat_value / 100)).toFixed(2);
+            let totalPriceWithoutVatLbp = (data.total_price_lbp / (1 + data.vat_value / 100)).toFixed(2);
 
-            let totalPriceWithoutVatLbp = 0;
-            let totalPriceLbp = data.total_price_lbp;
-            totalPriceWithoutVatLbp = (totalPriceLbp / (1 + vatValue / 100)).toFixed(2);
-            let dueDate = null;
-
-            if (!data.is_pending_payment) {
-                dueDate = new Date();
-            } else {
-                dueDate = null;
-            }
-
-            //Setting issue date to current date
+            let dueDate = data.is_pending_payment ? null : new Date();
             data.issue_date = new Date();
 
             // Create sale
             const sale = await Sale.create({
                 user_id: Number(user_id),
                 client_id: Number(data.client_id),
-                total_price_usd: Number(totalPriceUsd),
-                total_price_lbp: Number(totalPriceLbp),
-                vat_value: Number(vatValue),
+                total_price_usd: Number(data.total_price_usd),
+                total_price_lbp: Number(data.total_price_lbp),
+                vat_value: Number(data.vat_value),
                 total_price_without_vat_usd: Number(totalPriceWithoutVatUsd),
                 total_price_without_vat_lbp: Number(totalPriceWithoutVatLbp),
                 issue_date: data.issue_date,
@@ -90,38 +91,54 @@ class SaleService {
                 sale_type_id: Number(data.sale_type_id),
             });
 
-            //Create sale products
+            // Create sale products
             let saleProducts = [];
             for (const item of data.products) {
-                let saleProduct = {}
-                let saveResult = await SaleProducts.create({
+                let saleProduct = await SaleProducts.create({
                     sale_id: sale.id,
                     product_id: item.product_id,
                     quantity: item.quantity,
                     product_price: item.product_price,
-                })
-                saleProduct.product_id = saveResult.product_id;
-                saleProduct.quantity = saveResult.quantity;
-                saleProduct.product_price = saveResult.product_price;
-                saleProducts.push(saleProduct);
+                });
+
+                saleProducts.push({
+                    product_id: saleProduct.product_id,
+                    quantity: saleProduct.quantity,
+                    product_price: saleProduct.product_price,
+                });
             }
 
             sale.dataValues.products = saleProducts;
 
-            //Decrease van products quantity
-            for (const vanProduct of vanProductList) {
+            // Decrease product quantities in the corresponding inventory
+            for (const product of productList) {
                 for (const saleProduct of data.products) {
-                    if (vanProduct.product_id === saleProduct.product_id) {
-                        saleProduct.quantity = vanProduct.quantity - saleProduct.quantity;
+                    if (product.product_id === saleProduct.product_id) {
+                        product.quantity -= saleProduct.quantity; // Correct subtraction
                     }
                 }
             }
 
-            // Update van products quantity
-            await vanProductsService.updateVanProductsQuantities(user_id, data.products);
+            // Update product quantities in the correct inventory
+            if (data.sale_type_id === 1) {
+                // Update VanProducts directly
+                await Promise.all(productList.map(async (product) => {
+                    await VanProducts.update(
+                        { quantity: product.quantity },
+                        { where: { product_id: product.product_id, user_id: user_id } }
+                    );
+                }));
+            } else if (data.sale_type_id === 2) {
+                // Update MainWarehouseStock correctly
+                await Promise.all(productList.map(async (product) => {
+                    await MainWarehouseStock.update(
+                        { quantity: product.quantity },
+                        { where: { product_id: product.product_id } }
+                    );
+                }));
+            }
 
-            //TODO: add invoice pdf url
-
+            // TODO: Add invoice PDF URL
 
             return sale;
         } catch (error) {
