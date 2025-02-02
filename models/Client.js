@@ -27,7 +27,7 @@ const Client = sequelize.define('Client', {
         allowNull: false,
     },
     qr_code: {
-        type: DataTypes.TEXT('long'),
+        type: DataTypes.TEXT,
         allowNull: false,
     },
     company_name: {
