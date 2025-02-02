@@ -190,20 +190,18 @@ class VanProductsService {
                         ]
                     }
                 ],
-                attributes: [],
-                group: ['Product->category.id'],
+                attributes: ['Product.Category.id', 'Product.Category.category_name', 'Product.Category.category_image_url'],
+                group: ['Product.Category.id', 'Product.Category.category_name', 'Product.Category.category_image_url'],
                 raw: true,
             });
 
             console.log("vanProducts:", vanProducts);
 
-            const transformedProducts = vanProducts.map(product => {
-                return {
-                    id: product['Product.Category.id'],
-                    category_name: product['Product.Category.category_name'],
-                    category_image_url: product['Product.Category.category_image_url']
-                };
-            });
+            const transformedProducts = vanProducts.map(product => ({
+                id: product['Product.Category.id'],
+                category_name: product['Product.Category.category_name'],
+                category_image_url: product['Product.Category.category_image_url']
+            }));
 
             return transformedProducts;
         } catch (error) {
