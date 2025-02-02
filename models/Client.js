@@ -35,7 +35,7 @@ const Client = sequelize.define('Client', {
         allowNull: true,
     },
     commercial_register: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: true,
     },
     izaa_tijariye_pdf_url: {
@@ -47,11 +47,11 @@ const Client = sequelize.define('Client', {
         allowNull: true,
     },
     mof_number: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: true,
     },
     vat_register: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         allowNull: true,
     },
     location_area_id: {
