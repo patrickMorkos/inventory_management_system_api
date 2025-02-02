@@ -68,7 +68,7 @@ class MainWarehouseStockService {
             const mainWarehouseStocks = await MainWarehouseStock.findAll({
                 include: [{
                     model: Product,
-                    attributes: ['id', 'name', 'image_url'],
+                    attributes: ['id', 'name', 'image_url', 'barcod'],
                     include: [{
                         model: Brand,
                         attributes: ['id', 'brand_name'],
