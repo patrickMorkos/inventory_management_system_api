@@ -10,6 +10,7 @@ const vanProductsService = require('./vanProductsService');
 const Brand = require('../models/Brand');
 const SaleType = require('../models/SaleType');
 const MainWarehouseStock = require('../models/MainWarehouseStock');
+const ClientStock = require('../models/ClientStock');
 
 class SaleService {
     async createSale(user_id, data) {
@@ -137,6 +138,36 @@ class SaleService {
                     );
                 }));
             }
+
+            // Update Client Stock
+            await Promise.all(data.products.map(async (item) => {
+                const clientStock = await ClientStock.findOne({
+                    where: {
+                        client_id: data.client_id,
+                        product_id: item.product_id,
+                    }
+                });
+
+                if (clientStock) {
+                    // Increment the quantity
+                    await ClientStock.update(
+                        { quantity: clientStock.quantity + item.quantity },
+                        {
+                            where: {
+                                client_id: data.client_id,
+                                product_id: item.product_id,
+                            }
+                        }
+                    );
+                } else {
+                    // Create new stock record
+                    await ClientStock.create({
+                        client_id: data.client_id,
+                        product_id: item.product_id,
+                        quantity: item.quantity,
+                    });
+                }
+            }));
 
             // TODO: Add invoice PDF URL
 
