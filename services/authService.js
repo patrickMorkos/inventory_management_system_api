@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const passwordHasher = require('../lib/passwordHasher/passwordHasher')
 const validator = require('../lib/validator/validator')
 const bcrypt = require('bcryptjs')
+const UsdLbpRate = require('../models/UsdLbpRate');
 
 class AuthService {
     //This function validate the registration data
@@ -73,6 +74,9 @@ class AuthService {
 
             //Creating a jwt token
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+            const usdLbpRate = await UsdLbpRate.findOne({ where: { id: 1 } });
+
             user = {
                 "id": user.id,
                 "first_name": user.first_name,
@@ -83,6 +87,7 @@ class AuthService {
                 "date_of_join": user.date_of_join,
                 "blood_type": user.blood_type,
                 "user_type_id": user.user_type_id,
+                "usd_lbp_rate": usdLbpRate ? usdLbpRate.rate : null
             }
             return { user, token };
         }
